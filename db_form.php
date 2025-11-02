@@ -1,3 +1,5 @@
+// 新規作成
+// Norifumi Konishi
 <?php
 // DB接続情報
 $host = 'localhost';
