@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>連絡先登録</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 2rem; }
+    form { max-width: 520px; display: grid; gap: 12px; }
+    label { font-weight: 600; }
+    input[type="text"], input[type="tel"], input[type="email"] { padding: 10px; font-size: 16px; width: 100%; }
+    button { padding: 10px 16px; font-size: 16px; cursor: pointer; }
+    .hint { color: #666; font-size: 12px; }
+    .ok { color: #0a7; margin-top: 8px; }
+    .err { color: #c00; margin-top: 8px; }
+    a { text-decoration: none; color: #06c; }
+  </style>
+</head>
+<body>
+  <h1>連絡先登録</h1>
+
+  <!-- フォーム本体 -->
+  <form id="contactForm" novalidate>
+    <div>
+      <label for="name">氏名</label><br />
+      <input id="name" name="name" type="text" placeholder="山田太郎" required />
+    </div>
+
+    <div>
+      <label for="postal_code">郵便番号（自動整形）</label><br />
+      <input id="postal_code" name="postal_code" type="text" inputmode="numeric" placeholder="123-4567" maxlength="8" required />
+      <div class="hint">数字7桁を入力すると <code>123-4567</code> の形に自動整形します。</div>
+    </div>
+
+    <div>
+      <label for="phone">電話番号</label><br />
+      <input id="phone" name="phone" type="tel" placeholder="090-1234-5678" required />
+    </div>
+
+    <div>
+      <label for="email">メールアドレス</label><br />
+      <input id="email" name="email" type="email" placeholder="taro@example.com" required />
+    </div>
+
+    <button type="submit">保存</button>
+    <div id="msg"></div>
+  </form>
+
+  <!-- ★ フォームの外に移動（確実に list.php を開く） -->
+  <p style="margin-top:16px;">
+    <a href="./list.php">一覧を見る</a>
+  </p>
+
+  <script>
+    // 郵便番号：7桁 → 123-4567 に自動整形
+    const pc = document.getElementById('postal_code');
+    pc.addEventListener('input', () => {
+      const digits = pc.value.replace(/\D/g, '').slice(0, 7); // 数字のみ7桁まで
+      if (digits.length >= 4) {
+        pc.value = digits.slice(0, 3) + '-' + digits.slice(3);
+      } else {
+        pc.value = digits;
+      }
+    });
+
+    // 簡易バリデーション
+    function validate(form) {
+      const name = form.name.value.trim();
+      const postal = form.postal_code.value.trim();
+      const phone = form.phone.value.trim();
+      const email = form.email.value.trim();
+
+      if (!name || !postal || !phone || !email) return '未入力の項目があります。';
+      if (!/^\d{3}-\d{4}$/.test(postal)) return '郵便番号は 123-4567 の形式で入力してください。';
+      if (!/^[0-9+\-() ]{8,}$/.test(phone)) return '電話番号の形式を確認してください。';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'メールアドレスの形式を確認してください。';
+      return null;
+    }
+
+    // 送信（fetchで save.php にPOST）
+    const form = document.getElementById('contactForm');
+    const msg = document.getElementById('msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.textContent = '';
+      msg.className = '';
+
+      const err = validate(form);
+      if (err) {
+        msg.textContent = err;
+        msg.className = 'err';
+        return;
+      }
+
+      const data = {
+        name: form.name.value.trim(),
+        postal_code: form.postal_code.value.trim(),
+        phone: form.phone.value.trim(),
+        email: form.email.value.trim()
+      };
+
+      try {
+        const res = await fetch('./save.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || json.error) {
+          throw new Error(json.error || '保存に失敗しました');
+        }
+
+        msg.textContent = '保存しました。';
+        msg.className = 'ok';
+        form.reset();
+
+      } catch (e) {
+        msg.textContent = e.message;
+        msg.className = 'err';
+      }
+    });
+  </script>
+</body>
+</html>

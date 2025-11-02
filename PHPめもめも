@@ -1,0 +1,8 @@
+#php.iniの設定
+open -a "Visual Studio Code" /Applications/XAMPP/xamppfiles/etc/php.ini
+#よく変更する箇所
+display_errors	On	エラーをブラウザに表示（開発中に便利）
+memory_limit	512M	メモリ上限
+upload_max_filesize	50M	アップロードサイズ
+post_max_size	50M	POSTサイズ上限
+max_execution_time	120	スクリプト実行時間
