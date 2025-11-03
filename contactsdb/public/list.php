@@ -14,7 +14,16 @@ $sql .= ' ORDER BY id DESC';
 $rows = db()->prepare($sql);
 $rows->execute($params);
 $rows = $rows->fetchAll();
-?><!doctype html>
+
+/* 👇 ここから追加部分（JSON API モード） */
+if (isset($_GET['api']) && $_GET['api'] === 'json') {
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode($rows, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit;
+}
+/* 👆 ここまで追加 */
+?>
+<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
