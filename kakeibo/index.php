@@ -20,6 +20,9 @@ $ng = isset($_GET['ng']) ? $_GET['ng'] : '';
 
   <div class="card">
     <form method="post" action="save.php">
+      <div class="grid head">
+        <div>日付</div><div>カテゴリ</div><div>場所</div><div>金額</div><div></div>
+      </div>
       <div id="rows">
         <div class="grid row">
           <div><input type="date" name="event_date[]" required value="<?= h(date('Y-m-d')) ?>"></div>
