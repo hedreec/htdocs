@@ -8,7 +8,7 @@ $ng = isset($_GET['ng']) ? $_GET['ng'] : '';
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>かんたん家計簿（最小・レイアウト修正版）</title>
+  <title>かんたん家計簿（最小）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -20,6 +20,9 @@ $ng = isset($_GET['ng']) ? $_GET['ng'] : '';
 
   <div class="card">
     <form method="post" action="save.php">
+      <div class="grid head">
+        <div>日付</div><div>カテゴリ</div><div>場所</div><div>金額</div><div></div>
+      </div>
       <div id="rows">
         <div class="grid row">
           <div><input type="date" name="event_date[]" required value="<?= h(date('Y-m-d')) ?>"></div>
@@ -30,7 +33,7 @@ $ng = isset($_GET['ng']) ? $_GET['ng'] : '';
           </div>
           <div><input type="text" name="place[]" required placeholder="例：バス / 牛丼 など"></div>
           <div><input type="number" name="amount[]" min="1" step="1" required></div>
-          <div><button type="button" class="btn remove" title="行を削除">−</button></div>
+          <div><button type="button" class="btn remove" data-remove="1" title="行を削除">−</button></div>
         </div>
       </div>
 

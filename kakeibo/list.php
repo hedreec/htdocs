@@ -1,11 +1,8 @@
 
 <?php
 require_once __DIR__ . '/db.php';
-
 $rows = db()->query('SELECT * FROM records ORDER BY event_date DESC, id DESC LIMIT 200')->fetchAll();
-
-$total = 0;
-foreach ($rows as $r) $total += (int)$r['amount'];
+$total = 0; foreach ($rows as $r) $total += (int)$r['amount'];
 ?>
 <!doctype html>
 <html lang="ja">
@@ -20,21 +17,18 @@ foreach ($rows as $r) $total += (int)$r['amount'];
   <h1>一覧（最新200件）</h1>
   <div class="card">
     <div>合計：<?= number_format($total) ?> 円</div>
-    <table style="margin-top:8px">
-      <thead>
-        <tr><th>日付</th><th>カテゴリ</th><th>場所</th><th>金額</th></tr>
-      </thead>
-      <tbody>
-        <?php foreach ($rows as $r): ?>
-          <tr>
-            <td><?= h($r['event_date']) ?></td>
-            <td><?= h($r['category']) ?></td>
-            <td><?= h($r['place']) ?></td>
-            <td><?= number_format((int)$r['amount']) ?></td>
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
+    <div class="grid head" style="margin-top:8px">
+      <div>日付</div><div>カテゴリ</div><div>場所</div><div>金額</div><div></div>
+    </div>
+    <?php foreach ($rows as $r): ?>
+      <div class="grid row">
+        <div><?= h($r['event_date']) ?></div>
+        <div><?= h($r['category']) ?></div>
+        <div><?= h($r['place']) ?></div>
+        <div><?= number_format((int)$r['amount']) ?></div>
+        <div></div>
+      </div>
+    <?php endforeach; ?>
     <div style="margin-top:8px"><a href="index.php">← 入力に戻る</a></div>
   </div>
 </div>
